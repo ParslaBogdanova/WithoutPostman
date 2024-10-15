@@ -1,32 +1,43 @@
-window.onload = function(){
-    const getInfo = document.getElementById('get-email-info', 'get-password-info');
-    getInfo.addEventListener('submit', async function(event){
-        event.preventDefault();
-
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        try {
-            const response = await fetch('http://127.0.0.1:8000/api/user', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            const data = await response.json();
-          if (response.ok){
-                let buttonClick = document.querySelector("button");
-                buttonClick.addEventListener("click", () => {
-                    window.location.href = "index.php";
-                });
-            } 
-        }
-    });
-}
-
 
 window.onload = function() {
+    let userToken = '';
+
+const loginForm = document.getElementById('login-form');
+loginForm.addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    let formData = new FormData(event.target);
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            userToken = data.token;
+            fetchAllPosts(userToken);
+            document.getElementById('login-message').innerText = 'Login successful!';
+            document.getElementById('token-display').innerText = `Your token: ${userToken}`; // Display the token
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+
+
     const getForm = document.getElementById('get-user-form');
     getForm.addEventListener('submit', async function(event) {
         event.preventDefault();
