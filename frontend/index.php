@@ -9,6 +9,30 @@
 <body>
     <h1>Laravel API frontend</h1>
 
+<button id="show-register" class = "buttons">Register</button>
+<button id="show-login" class = "buttons">Login</button>
+
+<div class="container">
+    <h2>Register</h2>
+    <form action="/api/user" method="post" id="register-form">
+    <label for="name">Name</label>
+        <input type="name" name="name" id="name" required>
+
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required>
+
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required>
+
+        <label for="password_confirmation">Password Confirmation</label>
+        <input type="password_confirmation" name="password_confirmation" id="password_confirmation" required>
+
+        <input type="submit" value="Register">
+    </form>
+    <div id="register-message"></div>
+    <div id="token-display"></div> 
+</div>
+
     <div class="container">
     <h2>Login</h2>
     <form action="/api/user" method="get" id="login-form">

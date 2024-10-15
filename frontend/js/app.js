@@ -1,48 +1,103 @@
-
 window.onload = function() {
-    let userToken = '';
+    document.getElementById('register-form').style.display = 'block';
 
-const loginForm = document.getElementById('login-form');
-loginForm.addEventListener('submit', async function(event) {
-    event.preventDefault();
+    document.getElementById('show-register').addEventListener('click', function() {
+        document.getElementById('register-form').style.display = 'block';
+        document.getElementById('login-form').style.display = 'none';
+    });
 
-    let formData = new FormData(event.target);
-    const email = formData.get('email');
-    const password = formData.get('password');
+    document.getElementById('show-login').addEventListener('click', function() {
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('register-form').style.display = 'none';
+        document.getElementById('get-user-form').style.display = 'block';
+        document.getElementById('create-post-form').style.display = 'block';
+    });
 
-    try {
-        const response = await fetch('http://127.0.0.1:8000/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
-        });
+    let userToken = ''; 
 
-        const data = await response.json();
-
-        if (response.ok) {
-            userToken = data.token;
-            fetchAllPosts(userToken);
-            document.getElementById('login-message').innerText = 'Login successful!';
-            document.getElementById('token-display').innerText = `Your token: ${userToken}`; // Display the token
-        }
-
-    } catch (error) {
-        console.log(error);
+    function resetFormFields(form) {
+        form.reset();
     }
-});
 
+    const registerForm = document.getElementById('register-form');
+    registerForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
 
+        let formData = new FormData(event.target);
+        const name = formData.get('name');
+        const email = formData.get('email');
+        const password = formData.get('password');
+        const passwordConfirmation = formData.get('password_confirmation');
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password,
+                    password_confirmation: passwordConfirmation
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                userToken = data.token;
+                document.getElementById('register-message').innerText = 'Registration successful! Please log in.';
+                resetFormFields(registerForm);
+                document.getElementById('register-form').style.display = 'none';
+                document.getElementById('login-form').style.display = 'block';
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
+    const loginForm = document.getElementById('login-form');
+    loginForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        let formData = new FormData(event.target);
+        const email = formData.get('email');
+        const password = formData.get('password');
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                userToken = data.token;
+                fetchAllPosts(userToken);
+                document.getElementById('login-message').innerText = 'Login successful!';
+                document.getElementById('token-display').innerText = `Your token: ${userToken}`;
+                resetFormFields(loginForm);
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    });
 
     const getForm = document.getElementById('get-user-form');
     getForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
-        const token = document.getElementById('token').value;
+        const token = userToken || document.getElementById('token').value;
 
         try {
             const response = await fetch('http://127.0.0.1:8000/api/user', {
@@ -62,7 +117,7 @@ loginForm.addEventListener('submit', async function(event) {
             }
 
         } catch (error) {
-           console.log(error);
+            console.log(error);
         }
     });
 
@@ -77,7 +132,7 @@ loginForm.addEventListener('submit', async function(event) {
             const response = await fetch('http://127.0.0.1:8000/api/posts', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${userToken}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -91,10 +146,8 @@ loginForm.addEventListener('submit', async function(event) {
             if (response.ok) {
                 document.getElementById('post-data').innerHTML = `<p>Post Created Successfully!</p>
                                                                   <p><strong>Title:</strong> ${data.title}, <strong>Body:</strong> ${data.body}</p>`;
-                await fetchAllPosts(token);
-
-                document.getElementById('title').value = '';
-                document.getElementById('body').value = '';
+                resetFormFields(postForm);
+                await fetchAllPosts(userToken);
             }
 
         } catch (error) {
@@ -122,6 +175,8 @@ loginForm.addEventListener('submit', async function(event) {
                         <div class="post">
                             <p>Title: ${post.title}</p>
                             <p>Body: ${post.body}</p>
+                            <p>By: ${user.name}</p>
+                            <p>--------------------------</p>
                         </div>
                     `;
                 });
@@ -132,8 +187,7 @@ loginForm.addEventListener('submit', async function(event) {
         }
     }
 
-    const token = document.getElementById('token').value;
-    if (token) {
-        fetchAllPosts(token);
+    if (userToken) {
+        fetchAllPosts(userToken);
     }
 };

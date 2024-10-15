@@ -1,3 +1,10 @@
+#register-form,
+#login-form,
+#get-user-form,
+#create-post-form{
+   display:none;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -5,14 +12,17 @@ body {
     background-color: #f4f4f4;
 }
 
-/* Styling for the main header */
 h1 {
     text-align: center;
     margin: 20px 0;
     font-size: 36px;
 }
 
-/* Basic styling for form containers */
+button {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
 .container {
     max-width: 800px;
     margin: 20px auto;
@@ -23,14 +33,12 @@ h1 {
     background-color: #fff;
 }
 
-/* Form title styling */
 .container h2 {
     margin-bottom: 15px;
     font-size: 24px;
     text-align: center;
 }
 
-/* Styling for form fields */
 .container label {
     display: block;
     margin-bottom: 8px;
@@ -38,9 +46,11 @@ h1 {
 }
 
 .container input[type="text"],
+.container input[type="name"],
 .container input[type="email"],
 .container textarea,
 .container input[type="password"],
+.container input[type="password_confirmation"],
 .container input[type="submit"] {
     width: 100%;
     padding: 10px;
@@ -51,20 +61,17 @@ h1 {
     box-sizing: border-box;
 }
 
-/* Styling for textarea field */
 .container textarea {
     resize: vertical;
     min-height: 120px;
 }
 
-/* Submit button specific styling */
 .container input[type="submit"] {
     background-color: #4CAF50;
     color: white;
     cursor: pointer;
 }
 
-/* Hover effect for submit button */
 .container input[type="submit"]:hover {
     background-color: #45a049;
 }
