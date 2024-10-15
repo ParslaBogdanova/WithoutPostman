@@ -182,6 +182,7 @@ window.onload = function() {
                         `<div class="post">
                             <p>Title: ${post.title}</p>
                             <p>Body: ${post.body}</p>
+                            
                             <p>--------------------------</p>
                         </div>`; // Fixed: backticks added
                 });
@@ -193,7 +194,7 @@ window.onload = function() {
 
     function logoutUser() {
         userToken = '';
-        document.getElementById('token-display').innerHTML = '';
+        document.getElementById('token-display').innerText = ''; // Fixed: changed to correct element
         document.getElementById('user-data').innerHTML = '';
         document.getElementById('user-posts').innerHTML = '';
         document.getElementById('logout-button').style.display = 'none'; 
