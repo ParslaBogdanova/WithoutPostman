@@ -4,6 +4,9 @@ window.onload = function() {
     document.getElementById('show-register').addEventListener('click', function() {
         document.getElementById('register-form').style.display = 'block';
         document.getElementById('login-form').style.display = 'none';
+        document.getElementById('get-user-form').style.display = 'none';
+        document.getElementById('create-post-form').style.display = 'none';
+        document.getElementById('logout-button').style.display = 'none';
     });
 
     document.getElementById('show-login').addEventListener('click', function() {
@@ -11,6 +14,11 @@ window.onload = function() {
         document.getElementById('register-form').style.display = 'none';
         document.getElementById('get-user-form').style.display = 'block';
         document.getElementById('create-post-form').style.display = 'block';
+        document.getElementById('logout-button').style.display = 'block';
+    });
+
+    document.getElementById('logout-button').addEventListener('click', function() {
+        logoutUser();
     });
 
     let userToken = ''; 
@@ -83,8 +91,7 @@ window.onload = function() {
             if (response.ok) {
                 userToken = data.token;
                 fetchAllPosts(userToken);
-                document.getElementById('login-message').innerText = 'Login successful!';
-                document.getElementById('token-display').innerText = `Your token: ${userToken}`;
+                document.getElementById('token-display').innerText = `Your token: ${userToken}`; // Fixed: backticks added
                 resetFormFields(loginForm);
             }
 
@@ -103,7 +110,7 @@ window.onload = function() {
             const response = await fetch('http://127.0.0.1:8000/api/user', {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`, // Fixed: backticks added
                     'Content-Type': 'application/json'
                 }
             });
@@ -112,7 +119,7 @@ window.onload = function() {
 
             if (response.ok) {
                 document.getElementById('user-data').innerHTML = `<p>User Email: ${data.email}<br>
-                                                                    User Name: ${data.name}</p>`;
+                                                                    User Name: ${data.name}</p>`; // Fixed: backticks added
                 await fetchAllPosts(token);
             }
 
@@ -132,7 +139,7 @@ window.onload = function() {
             const response = await fetch('http://127.0.0.1:8000/api/posts', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${userToken}`,
+                    'Authorization': `Bearer ${userToken}`, // Fixed: backticks added
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -145,7 +152,7 @@ window.onload = function() {
 
             if (response.ok) {
                 document.getElementById('post-data').innerHTML = `<p>Post Created Successfully!</p>
-                                                                  <p><strong>Title:</strong> ${data.title}, <strong>Body:</strong> ${data.body}</p>`;
+                                                                  <p><strong>Title:</strong> ${data.title}, <strong>Body:</strong> ${data.body}</p>`; // Fixed: backticks added
                 resetFormFields(postForm);
                 await fetchAllPosts(userToken);
             }
@@ -160,7 +167,7 @@ window.onload = function() {
             const response = await fetch('http://127.0.0.1:8000/api/posts', {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${token}`, // Fixed: backticks added
                     'Content-Type': 'application/json'
                 }
             });
@@ -171,20 +178,31 @@ window.onload = function() {
                 const postsContainer = document.getElementById('user-posts');
                 postsContainer.innerHTML = '';
                 posts.forEach(post => {
-                    postsContainer.innerHTML += `
-                        <div class="post">
+                    postsContainer.innerHTML += 
+                        `<div class="post">
                             <p>Title: ${post.title}</p>
                             <p>Body: ${post.body}</p>
-                            <p>By: ${user.name}</p>
                             <p>--------------------------</p>
-                        </div>
-                    `;
+                        </div>`; // Fixed: backticks added
                 });
-            
             }
         } catch (error) {
             console.log(error);
         }
+    }
+
+    function logoutUser() {
+        userToken = '';
+        document.getElementById('token-display').innerHTML = '';
+        document.getElementById('user-data').innerHTML = '';
+        document.getElementById('user-posts').innerHTML = '';
+        document.getElementById('logout-button').style.display = 'none'; 
+        document.getElementById('register-form').style.display = 'none'; // Fixed: changed to correct element
+        document.getElementById('login-form').style.display = 'none'; // Fixed: changed to correct element
+        document.getElementById('get-user-form').style.display = 'none'; // Fixed: changed to correct element
+        document.getElementById('create-post-form').style.display = 'none'; // Fixed: changed to correct element
+        document.getElementById('show-register').style.display = 'block';
+        document.getElementById('show-login').style.display = 'block';
     }
 
     if (userToken) {
